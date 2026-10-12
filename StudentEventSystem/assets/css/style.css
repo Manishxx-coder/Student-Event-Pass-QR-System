@@ -1,0 +1,7 @@
+body { background: #f5f7fb; color: #182230; }
+.navbar-brand { letter-spacing: .3px; }
+.hero { border-radius: 1.25rem; padding: 3rem; color: white; background: linear-gradient(125deg,#182848,#315a9b); }
+.card { border: 0; border-radius: 1rem; box-shadow: 0 8px 28px rgba(15,23,42,.06); }
+.btn-primary { background: #315a9b; border-color: #315a9b; }
+.form-control, .form-select { padding: .7rem .85rem; }
+.stat { font-size: 1.8rem; font-weight: 700; }

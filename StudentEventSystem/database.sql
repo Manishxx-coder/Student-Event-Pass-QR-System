@@ -1,0 +1,46 @@
+CREATE DATABASE IF NOT EXISTS student_event_system
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE student_event_system;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  role ENUM('student','admin','staff') NOT NULL DEFAULT 'student',
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS events (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(150) NOT NULL,
+  description TEXT NOT NULL,
+  venue VARCHAR(150) NOT NULL,
+  event_date DATETIME NOT NULL,
+  capacity INT UNSIGNED NOT NULL DEFAULT 100,
+  created_by INT UNSIGNED NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_events_creator FOREIGN KEY (created_by) REFERENCES users(id)
+    ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS registrations (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL,
+  event_id INT UNSIGNED NOT NULL,
+  qr_token CHAR(64) NOT NULL UNIQUE,
+  status ENUM('registered','checked_in','cancelled') NOT NULL DEFAULT 'registered',
+  registered_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_user_event (user_id, event_id),
+  CONSTRAINT fk_reg_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_reg_event FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS attendance (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  registration_id INT UNSIGNED NOT NULL UNIQUE,
+  checked_by INT UNSIGNED NULL,
+  checked_in_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_att_reg FOREIGN KEY (registration_id) REFERENCES registrations(id) ON DELETE CASCADE,
+  CONSTRAINT fk_att_user FOREIGN KEY (checked_by) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
