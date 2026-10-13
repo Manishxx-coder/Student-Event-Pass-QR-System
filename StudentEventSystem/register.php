@@ -18,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $e) { $errors[] = 'That email may already be registered.'; }
     }
 }
-
 $pageTitle = 'Create account | EventPass';
 require __DIR__ . '/includes/header.php';
 ?>
